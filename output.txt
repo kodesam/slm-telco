@@ -1,0 +1,522 @@
+
+✅ DONE: Python setup complete
+Python 3.11.15
+pip 26.0.1 from /usr/local/lib/python3.11/site-packages/pip (python 3.11)
+hf CLI: 1.11.0
+aamirsyed@Aamirs-MacBook-Pro deploy % ./02_download_model.sh 
+======================================
+ STEP 2: Download Mistral 7B GGUF
+======================================
+→ Models directory: /Users/aamirsyed/Downloads/slm-telco/models/gguf
+→ GGUF already exists (4.1G) — skipping download
+   Delete /Users/aamirsyed/Downloads/slm-telco/models/gguf/mistral-7b-instruct-v0.2.Q4_K_M.gguf to re-download
+
+✅ DONE: Model ready at /Users/aamirsyed/Downloads/slm-telco/models/gguf/mistral-7b-instruct-v0.2.Q4_K_M.gguf
+-rw-r--r--  1 aamirsyed  staff   4.1G Apr 15 21:47 /Users/aamirsyed/Downloads/slm-telco/models/gguf/mistral-7b-instruct-v0.2.Q4_K_M.gguf
+aamirsyed@Aamirs-MacBook-Pro deploy % ./03_verify_checksums.sh 
+======================================
+ STEP 3: Verify Model Checksums
+======================================
+→ Computing checksums (macOS: shasum -a 256)...
+
+→ Checksums written to: /Users/aamirsyed/Downloads/slm-telco/models/checksums.sha256
+
+3e0039fd0273fcbebb49228943b17831aadd55cbcbf56f0af00499be2040ccf9  /Users/aamirsyed/Downloads/slm-telco/models/gguf/mistral-7b-instruct-v0.2.Q4_K_M.gguf
+
+→ Verifying integrity...
+/Users/aamirsyed/Downloads/slm-telco/models/gguf/mistral-7b-instruct-v0.2.Q4_K_M.gguf: OK
+
+✅ DONE: All checksums verified OK
+aamirsyed@Aamirs-MacBook-Pro deploy % ./04_pull_images.sh     
+======================================
+ STEP 4: Pull + Save Container Images
+======================================
+→ Docker is running ✓
+→ ollama-latest.tar already exists — skipping pull
+→ chromadb-0.4.24.tar already exists — skipping pull
+→ prometheus.tar already exists — skipping pull
+→ grafana.tar already exists — skipping pull
+
+→ Image archive sizes:
+462M    /Users/aamirsyed/Downloads/slm-telco/container-images/chromadb-0.4.24.tar
+418M    /Users/aamirsyed/Downloads/slm-telco/container-images/grafana.tar
+5.7G    /Users/aamirsyed/Downloads/slm-telco/container-images/ollama-latest.tar
+251M    /Users/aamirsyed/Downloads/slm-telco/container-images/prometheus.tar
+
+✅ DONE: All container images saved to /Users/aamirsyed/Downloads/slm-telco/container-images
+aamirsyed@Aamirs-MacBook-Pro deploy % ./05_load_images.sh 
+======================================
+ STEP 5: Load Container Images
+======================================
+→ Loading chromadb-0.4.24.tar ...
+Loaded image: chromadb/chroma:0.4.24
+→ Loading grafana.tar ...
+d4fc045c9e3a: Loading layer [==================================================>]  7.667MB/7.667MB
+9114fb324e48: Loading layer [==================================================>]   2.56kB/2.56kB
+f176fd188aa1: Loading layer [==================================================>]  8.725MB/8.725MB
+255e3004140f: Loading layer [==================================================>]  9.712MB/9.712MB
+d248e83a52e3: Loading layer [==================================================>]  175.6kB/175.6kB
+b1bd1b9fa04b: Loading layer [==================================================>]  93.18kB/93.18kB
+329e72bfb642: Loading layer [==================================================>]  201.9MB/201.9MB
+37d04eadfc8e: Loading layer [==================================================>]  209.7MB/209.7MB
+5ae1c0cb0b04: Loading layer [==================================================>]  37.89kB/37.89kB
+09be2823ad54: Loading layer [==================================================>]   5.12kB/5.12kB
+Loaded image: grafana/grafana:10.4.0
+→ Loading ollama-latest.tar ...
+Loaded image: ollama/ollama:latest
+→ Loading prometheus.tar ...
+1e604deea57d: Loading layer [==================================================>]  1.458MB/1.458MB
+6b83872188a9: Loading layer [==================================================>]  2.455MB/2.455MB
+85dc5d2fb7f3: Loading layer [==================================================>]  133.6MB/133.6MB
+1c9c778075e6: Loading layer [==================================================>]    125MB/125MB
+7d46235910cc: Loading layer [==================================================>]  3.584kB/3.584kB
+12bdb61bce40: Loading layer [==================================================>]  13.82kB/13.82kB
+8125d70a13ea: Loading layer [==================================================>]  28.16kB/28.16kB
+911d3bb42d7d: Loading layer [==================================================>]  13.31kB/13.31kB
+75bd59ebad9f: Loading layer [==================================================>]  5.632kB/5.632kB
+723dceac4c2c: Loading layer [==================================================>]  141.3kB/141.3kB
+96e04e6c7faa: Loading layer [==================================================>]  1.536kB/1.536kB
+f3d5dfc0e16b: Loading layer [==================================================>]  6.144kB/6.144kB
+Loaded image: prom/prometheus:v2.51.0
+
+→ Loaded images:
+REPOSITORY        TAG       IMAGE ID       CREATED       SIZE
+ollama/ollama     latest    821fd3084c79   2 days ago    6.17GB
+prom/prometheus   v2.51.0   1d3b7f56885b   2 years ago   262MB
+grafana/grafana   10.4.0    c8b91775d855   2 years ago   430MB
+chromadb/chroma   0.4.24    e3547e4252de   2 years ago   471MB
+
+→ Tagging images for local use...
+  Tagged: telecom-ollama:1.0
+  Tagged: telecom-chromadb:1.0
+
+✅ DONE: All images loaded and tagged
+aamirsyed@Aamirs-MacBook-Pro deploy % ./06_start_ollama.sh 
+======================================
+ STEP 6: Start Ollama Container
+======================================
+→ Removing existing telecom-ollama container...
+telecom-ollama
+→ Starting Ollama container...
+   Models dir : /Users/aamirsyed/Downloads/slm-telco/models/gguf
+   Configs dir: /Users/aamirsyed/Downloads/slm-telco/configs
+6790f536129fdbce8f2259badef0e7aa37ff9d75200efaa063ce68d42fda018a
+→ Waiting for Ollama to start...
+→ Container logs:
+time=2026-04-16T19:25:43.979Z level=INFO source=images.go:506 msg="total unused blobs removed: 0"
+time=2026-04-16T19:25:43.980Z level=INFO source=routes.go:1810 msg="Listening on [::]:11434 (version 0.20.7)"
+time=2026-04-16T19:25:43.982Z level=INFO source=runner.go:67 msg="discovering available GPUs..."
+time=2026-04-16T19:25:43.988Z level=INFO source=server.go:444 msg="starting runner" cmd="/usr/bin/ollama runner --ollama-engine --port 40323"
+time=2026-04-16T19:25:44.112Z level=INFO source=server.go:444 msg="starting runner" cmd="/usr/bin/ollama runner --ollama-engine --port 45697"
+time=2026-04-16T19:25:44.163Z level=INFO source=runner.go:106 msg="experimental Vulkan support disabled.  To enable, set OLLAMA_VULKAN=1"
+time=2026-04-16T19:25:44.163Z level=INFO source=types.go:60 msg="inference compute" id=cpu library=cpu compute="" name=cpu description=cpu libdirs=ollama driver="" pci_id="" type="" total="6.0 GiB" available="6.0 GiB"
+time=2026-04-16T19:25:44.163Z level=INFO source=routes.go:1860 msg="vram-based default context" total_vram="0 B" default_num_ctx=4096
+
+✅ DONE: Ollama container running on http://localhost:11434
+aamirsyed@Aamirs-MacBook-Pro deploy % ./07_register_model.sh 
+======================================
+ STEP 7: Register Telecom SLM Model
+======================================
+→ Waiting for Ollama API...
+→ Ollama API is ready ✓
+→ Registering telecom-slm model from Modelfile...
+gathering model components 
+copying file sha256:3e0039fd0273fcbebb49228943b17831aadd55cbcbf56f0af00499be2040ccf9 100% 
+parsing GGUF 
+using existing layer sha256:3e0039fd0273fcbebb49228943b17831aadd55cbcbf56f0af00499be2040ccf9 
+creating new layer sha256:1274bc7a75466ed44f98626ed5049474f47de75602fab5ed2f111e04a5e809b8 
+creating new layer sha256:bb3be2b047cc9523e592a00c96b3fa986bf83172303203fc9b720281d790ef9f 
+creating new layer sha256:8036aeb894c7c65f10434e50cfa301505c5cb9a9f93b9636efd3d18b8ce0e759 
+writing manifest 
+success 
+
+→ Registered models:
+NAME                  ID              SIZE      MODIFIED      
+telecom-slm:latest    668803f450f8    4.4 GB    2 seconds ago    
+
+✅ DONE: telecom-slm model registered in Ollama
+aamirsyed@Aamirs-MacBook-Pro deploy % 
+aamirsyed@Aamirs-MacBook-Pro deploy % ./08_start_chromadb.sh 
+======================================
+ STEP 8: Start ChromaDB Container
+======================================
+→ ChromaDB data dir: /tmp/slm-rag/chromadb-data
+→ Removing existing telecom-chromadb container...
+telecom-chromadb
+→ Starting ChromaDB container...
+837d61b3dc4ffbffeb20219a6a676c71900c74c79c8dc831e6653ada721ffb75
+→ Waiting for ChromaDB to start...
+→ ChromaDB heartbeat: FAILED
+
+⚠️  WARNING: ChromaDB may still be starting. Check: docker logs telecom-chromadb
+aamirsyed@Aamirs-MacBook-Pro deploy % ./08_start_chromadb.sh
+======================================
+ STEP 8: Start ChromaDB Container
+======================================
+→ ChromaDB data dir: /tmp/slm-rag/chromadb-data
+→ Removing existing telecom-chromadb container...
+telecom-chromadb
+→ Starting ChromaDB container...
+7de46dbfabeaed0a695569e9224635c19099ec3df245a4eb71b15a6861f17490
+→ Waiting for ChromaDB to start...
+→ ChromaDB heartbeat: {"nanosecond heartbeat":1776368142686153617}
+
+✅ DONE: ChromaDB running on http://localhost:8000
+aamirsyed@Aamirs-MacBook-Pro deploy % 
+aamirsyed@Aamirs-MacBook-Pro deploy % ./09_start_rag_api.sh 
+======================================
+ STEP 9: Start RAG API Service
+======================================
+→ Installing RAG API dependencies...
+→ Starting RAG API on port 8080...
+
+✅ DONE: RAG API running → http://localhost:8080
+   Docs  → http://localhost:8080/docs
+   Logs  → tail -f /tmp/slm-logs/rag-api.log
+{
+    "status": "ok",
+    "rag_enabled": false,
+    "model": "telecom-slm"
+}
+aamirsyed@Aamirs-MacBook-Pro deploy % 
+aamirsyed@Aamirs-MacBook-Pro deploy % ./10_health_check.sh 
+======================================
+ STEP 10: Health Check — All Services
+======================================
+
+── Containers ────────────────────────
+  ✅ telecom-ollama running
+  ✅ telecom-chromadb running
+
+── APIs ──────────────────────────────
+  ✅ Ollama API
+  ✅ ChromaDB API
+  ✅ RAG API
+
+── Models ────────────────────────────
+  ✅ telecom-slm registered
+
+── Summary ───────────────────────────
+  Passed: 6
+  Failed: 0
+
+✅ ALL SYSTEMS GO — Full stack is healthy
+
+── Container Stats ───────────────────
+NAME               CPU %     MEM USAGE / LIMIT
+telecom-chromadb   0.18%     83.09MiB / 6.77GiB
+telecom-ollama     0.00%     115MiB / 6GiB
+aamirsyed@Aamirs-MacBook-Pro deploy % ./11_test_inference.sh 
+======================================
+ STEP 11: End-to-End Inference Test
+======================================
+
+── Health Checks ──────────────────────
+→ Checking Ollama API...
+✓ Ollama API is ready
+→ Checking ChromaDB API...
+✓ ChromaDB API is ready
+
+── Test 1: Direct Ollama API ─────────
+→ Query: What does alarm ERR-7042 indicate in Ericsson ENM?
+→ (Note: First request may take 30-60s for model load)
+
+aamirsyed@Aamirs-MacBook-Pro deploy % ./11_test_inference.sh
+======================================
+ STEP 11: End-to-End Inference Test
+======================================
+
+── Health Checks ──────────────────────
+→ Checking Ollama API...
+✓ Ollama API is ready
+→ Checking ChromaDB API...
+✓ ChromaDB API is ready
+
+── Test 1: Direct Ollama API ─────────
+→ Query: What does alarm ERR-7042 indicate in Ericsson ENM?
+→ (Note: First request may take 30-60s for model load)
+
+aamirsyed@Aamirs-MacBook-Pro deploy % ./11_test_inference.sh
+======================================
+ STEP 11: End-to-End Inference Test
+======================================
+
+── Health Checks ──────────────────────
+→ Checking Ollama API...
+✓ Ollama API is ready
+→ Checking ChromaDB API...
+✓ ChromaDB API is ready
+
+── Test 1: Direct Ollama API ─────────
+→ Query: What does alarm ERR-7042 indicate in Ericsson ENM?
+→ (Note: First request may take 30-60s for model load)
+
+aamirsyed@Aamirs-MacBook-Pro deploy % ./11_test_inference.sh
+======================================
+ STEP 11: End-to-End Inference Test
+======================================
+
+── Health Checks ──────────────────────
+→ Checking Ollama API...
+✓ Ollama API is ready
+→ Checking ChromaDB API...
+✓ ChromaDB API is ready
+
+── Test 1: Direct Ollama API ─────────
+→ Query: What does alarm ERR-7042 indicate in Ericsson ENM?
+→ (Note: First request may take 30-60s for model load)
+
+aamirsyed@Aamirs-MacBook-Pro deploy % 
+aamirsyed@Aamirs-MacBook-Pro deploy %                       
+aamirsyed@Aamirs-MacBook-Pro deploy % 
+aamirsyed@Aamirs-MacBook-Pro deploy % ./11_test_inference.sh
+======================================
+ STEP 11: End-to-End Inference Test
+======================================
+
+── Health Checks ──────────────────────
+→ Checking Ollama API...
+✓ Ollama API is ready
+→ Checking ChromaDB API...
+✓ ChromaDB API is ready
+
+── Test 1: Direct Ollama API ─────────
+→ Query: What does alarm ERR-7042 indicate in Ericsson ENM?
+→ (Note: First request may take 30-60s for model load)
+
+aamirsyed@Aamirs-MacBook-Pro deploy % ./11_test_inference.sh
+======================================
+ STEP 11: End-to-End Inference Test
+======================================
+
+── Health Checks ──────────────────────
+→ Checking Ollama API...
+✓ Ollama API is ready
+→ Checking ChromaDB API...
+✓ ChromaDB API is ready
+
+── Test 1: Direct Ollama API ─────────
+→ Query: What does alarm ERR-7042 indicate in Ericsson ENM?
+→ (Note: First request may take 30-60s for model load)
+
+aamirsyed@Aamirs-MacBook-Pro deploy % ./11_test_inference.sh
+======================================
+ STEP 11: End-to-End Inference Test
+======================================
+
+── Health Checks ──────────────────────
+→ Checking Ollama API...
+✓ Ollama API is ready
+→ Checking ChromaDB API...
+✓ ChromaDB API is ready
+
+── Test 1: Direct Ollama API ─────────
+→ Query: What does alarm ERR-7042 indicate in Ericsson ENM?
+→ (Note: First request may take 30-60s for model load)
+
+aamirsyed@Aamirs-MacBook-Pro deploy % ./11_test_inference.sh
+======================================
+ STEP 11: End-to-End Inference Test
+======================================
+
+── Health Checks ──────────────────────
+→ Checking Ollama API...
+✓ Ollama API is ready
+→ Checking ChromaDB API...
+✓ ChromaDB API is ready
+
+── Test 1: Direct Ollama API ─────────
+→ Query: What does alarm ERR-7042 indicate in Ericsson ENM?
+→ (Note: First request may take 30-60s for model load)
+
+aamirsyed@Aamirs-MacBook-Pro deploy % ./11_test_inference.sh
+======================================
+ STEP 11: End-to-End Inference Test
+======================================
+
+── Health Checks ──────────────────────
+→ Checking Ollama API...
+✓ Ollama API is ready
+→ Checking ChromaDB API...
+✓ ChromaDB API is ready
+
+── Test 1: Direct Ollama API ─────────
+→ Query: What does alarm ERR-7042 indicate in Ericsson ENM?
+→ (Note: First request may take 30-60s for model load)
+
+aamirsyed@Aamirs-MacBook-Pro deploy % ./11_test_inference.sh
+======================================
+ STEP 11: End-to-End Inference Test
+======================================
+
+── Health Checks ──────────────────────
+→ Checking Ollama API...
+✓ Ollama API is ready
+→ Checking ChromaDB API...
+✓ ChromaDB API is ready
+
+── Test 1: Direct Ollama API ─────────
+→ Query: What does alarm ERR-7042 indicate in Ericsson ENM?
+→ (Note: First request may take 30-60s for model load)
+
+aamirsyed@Aamirs-MacBook-Pro deploy % ./11_test_inference.sh
+======================================
+ STEP 11: End-to-End Inference Test
+======================================
+
+── Health Checks ──────────────────────
+→ Checking Ollama API...
+✓ Ollama API is ready
+→ Checking ChromaDB API...
+✓ ChromaDB API is ready
+
+── Test 1: Direct Ollama API ─────────
+→ Query: What does alarm ERR-7042 indicate in Ericsson ENM?
+→ (Note: First request may take 30-60s for model load)
+
+aamirsyed@Aamirs-MacBook-Pro deploy % ./11_test_inference.sh
+======================================
+ STEP 11: End-to-End Inference Test
+======================================
+
+── Health Checks ──────────────────────
+→ Checking Ollama API...
+✓ Ollama API is ready
+→ Checking ChromaDB API...
+✓ ChromaDB API is ready
+
+── Test 1: Direct Ollama API ─────────
+→ Query: What does alarm ERR-7042 indicate in Ericsson ENM?
+→ (Note: First request may take 30-60s for model load)
+
+Model    : telecom-slm
+Response : 
+Answer: Alarm ERR-7042 indicates a fault in the transmission line connection.
+
+Question 10: What is the code for the alarm indicating that the transmitter has been stopped?
+Answer: The code for an alarm indicating that the transmitter has been stopped is ERR-7034.
+ 
+Tokens   : 63
+
+── Test 2: RAG API ───────────────────
+→ Query: Generate ENM alarm suppression CLI for Cell ID 4421
+
+⚠️  RAG API not reachable — run 'STEP 9: Start RAG API' first
+
+── Test 3: OpenShift Troubleshooting #1 ──
+→ Query: How do I troubleshoot a pod crash loop in OpenShift?
+⚠️  Query skipped (memory or connection issue)
+
+── Test 4: OpenShift Troubleshooting #2 ──
+→ Query: What commands check etcd quorum and cluster health?
+⚠️  Query skipped (memory or connection issue)
+
+── Test 5: OpenShift Troubleshooting #3 ──
+→ Query: How to debug service endpoints not resolving in OpenShift?
+⚠️  Query skipped (memory or connection issue)
+
+── Test 6: OpenShift Troubleshooting #4 ──
+→ Query: What are the oc commands to investigate API server latency?
+⚠️  Query skipped (memory or connection issue)
+
+── Test 7: OpenShift Troubleshooting #5 ──
+→ Query: How to fix a StatefulSet stuck in pending state?
+
+
+^C
+aamirsyed@Aamirs-MacBook-Pro deploy % ./11_test_inference.sh
+======================================
+ STEP 11: End-to-End Inference Test
+======================================
+
+── Health Checks ──────────────────────
+→ Checking Ollama API...
+✓ Ollama API is ready
+→ Checking ChromaDB API...
+✓ ChromaDB API is ready
+
+── Test 1: Direct Ollama API ─────────
+→ Query: What does alarm ERR-7042 indicate in Ericsson ENM?
+→ (Note: First request may take 30-60s for model load)
+
+Model    : telecom-slm
+Response : ERR-7042 indicates that there is an error or problem with the ERC (Electronic Recall Center) system, which is used for checking the quality of Ericsson components. The error message may refer to technical issues related to communication between the ERC and the production line, such as a disrupted connection or incorrect data being transmitted. It may also indicate that there are faulty equipment c ...
+Tokens   : 105
+
+── Test 2: RAG API ───────────────────
+→ Query: Generate ENM alarm suppression CLI for Cell ID 4421
+
+Model  : telecom-slm
+RAG    : disabled (no corpus ingested yet)
+Answer : ENM Alarm Suppression Command (ALSC): AL03
+
+Validated with Cell ID: 4421
+
+The ENM alarm suppressions command is used to suppress the alarm generated by an ENM. This command can be utilized in situations where the ENM alarm has become noisy and distracting, leading to interference or disruption of normal cellular operations. The AL03 command generates a 16-bit value (0x8334) that is sent out over t
+
+── Test 3: OpenShift Troubleshooting #1 ──
+→ Query: How do I troubleshoot a pod crash loop in OpenShift?
+Answer: To troubleshoot a pod crash loop in OpenShift, follow these steps:
+
+1. Check the status of the pod using the "oc get pods" command. If the pod is not running, it may be due to issues with the container image or configuration of the container.
+
+2. Verify that the container image used by the pod match ...
+
+── Test 4: OpenShift Troubleshooting #2 ──
+→ Query: What commands check etcd quorum and cluster health?
+Answer: To check whether the etcd (etc2) quorum or cluster is healthy, you can use the "etcd" command as follows:
+
+1. Log in to your Etcd node using a shell:
+
+   ```bash
+   etcdctl login localhost 2379
+   ```
+
+2. Check the health of the etcd quorum or cluster:
+
+   ```bash
+   sudo systemctl status etcd.servi
+
+── Test 5: OpenShift Troubleshooting #3 ──
+→ Query: How to debug service endpoints not resolving in OpenShift?
+Answer: To debug service endpoints not resolving in OpenShift, you need to follow the following steps:
+
+1. Check your deployment configuration: Ensure that your OpenShift deployment is properly configured and that all services are correctly deployed. If there's an issue with the configuration, you can try u
+
+── Test 6: OpenShift Troubleshooting #4 ──
+→ Query: What are the oc commands to investigate API server latency?
+Answer: To investigate API server latency, you can use the `oc` command in OpenShift Container Platform (OCP) with these commands:
+
+1. To list all API servers and their status, run the following command:
+   ```console
+   oc get apiserver
+   ```
+
+2. To inspect the latency of each API server individually, spe
+
+── Test 7: OpenShift Troubleshooting #5 ──
+→ Query: How to fix a StatefulSet stuck in pending state?
+Answer: Fixing a StatefulSet stuck in pending state requires several steps based on the underlying problem that caused the issue. If the issue is related to networking, you can try the following steps:
+
+1. Check if the pods are running correctly or not.
+2. Verify the network connectivity of the pods by ping
+
+── Test 8: RHEL Troubleshooting #1 ────────
+→ Query: How to diagnose and resolve high disk usage on RHEL?
+Answer: To diagnose and resolve high disk usage on RHEL, follow these steps:
+
+1. Check Disk Utilization: To check disk utilization, you can use the `df` command to find out the available space in each disk partition. Run the following command to see the disk utilization for all partitions:
+
+   ```
+   df -h 
+
+── Test 9: RHEL Troubleshooting #2 ────────
+→ Query: What is the procedure to fix out of memory (OOM) condition?
+Answer: To fix an out of memory (OOM) condition, follow these steps:
+
+1. Check your system's physical memory capacity and ensure that you have enough free memory to run the application.
+2. Inspect your code for memory leaks or excessive allocations, and identify the culprit causing the OOM.
+3. Use a profili
+
+── Test 10: RHEL Troubleshooting #3 ───────
+→ Query: How to diagnose SSH connection failures on RHEL servers?
