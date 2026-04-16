@@ -1,0 +1,153 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+
+    {
+      "label": "🔧 SETUP: Install Homebrew",
+      "type": "shell",
+      "command": "/bin/bash -c \"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\"",
+      "group": "build",
+      "presentation": { "reveal": "always", "panel": "dedicated", "showReuseMessage": false }
+    },
+
+    {
+      "label": "🐍 SETUP: Install Python 3.11 + pip",
+      "type": "shell",
+      "command": "bash ${workspaceFolder}/scripts/deploy/01_setup_python.sh",
+      "group": "build",
+      "presentation": { "reveal": "always", "panel": "dedicated", "showReuseMessage": false }
+    },
+
+    {
+      "label": "🐳 SETUP: Install Docker Desktop",
+      "type": "shell",
+      "command": "brew install --cask docker && open -a Docker",
+      "group": "build",
+      "presentation": { "reveal": "always", "panel": "dedicated", "showReuseMessage": false }
+    },
+
+    {
+      "label": "📥 MODEL: Download Mistral 7B GGUF",
+      "type": "shell",
+      "command": "bash ${workspaceFolder}/scripts/deploy/02_download_model.sh",
+      "group": "build",
+      "presentation": { "reveal": "always", "panel": "dedicated", "showReuseMessage": false }
+    },
+
+    {
+      "label": "✅ MODEL: Verify Checksums",
+      "type": "shell",
+      "command": "bash ${workspaceFolder}/scripts/deploy/03_verify_checksums.sh",
+      "group": "test",
+      "presentation": { "reveal": "always", "panel": "dedicated", "showReuseMessage": false }
+    },
+
+    {
+      "label": "🐳 DOCKER: Pull + Save Container Images",
+      "type": "shell",
+      "command": "bash ${workspaceFolder}/scripts/deploy/04_pull_images.sh",
+      "group": "build",
+      "presentation": { "reveal": "always", "panel": "dedicated", "showReuseMessage": false }
+    },
+
+    {
+      "label": "🐳 DOCKER: Load Images from Bundle",
+      "type": "shell",
+      "command": "bash ${workspaceFolder}/scripts/deploy/05_load_images.sh",
+      "group": "build",
+      "presentation": { "reveal": "always", "panel": "dedicated", "showReuseMessage": false }
+    },
+
+    {
+      "label": "🤖 OLLAMA: Start Ollama Container",
+      "type": "shell",
+      "command": "bash ${workspaceFolder}/scripts/deploy/06_start_ollama.sh",
+      "group": "build",
+      "presentation": { "reveal": "always", "panel": "dedicated", "showReuseMessage": false }
+    },
+
+    {
+      "label": "🤖 OLLAMA: Register Telecom SLM Model",
+      "type": "shell",
+      "command": "bash ${workspaceFolder}/scripts/deploy/07_register_model.sh",
+      "group": "build",
+      "presentation": { "reveal": "always", "panel": "dedicated", "showReuseMessage": false }
+    },
+
+    {
+      "label": "🧠 CHROMADB: Start ChromaDB Container",
+      "type": "shell",
+      "command": "bash ${workspaceFolder}/scripts/deploy/08_start_chromadb.sh",
+      "group": "build",
+      "presentation": { "reveal": "always", "panel": "dedicated", "showReuseMessage": false }
+    },
+
+    {
+      "label": "📚 RAG: Ingest Telecom Corpus",
+      "type": "shell",
+      "command": "python3.11 /opt/slm-rag/ingest_rag.py",
+      "group": "build",
+      "presentation": { "reveal": "always", "panel": "dedicated", "showReuseMessage": false }
+    },
+
+    {
+      "label": "🚀 RAG API: Start Service",
+      "type": "shell",
+      "command": "bash ${workspaceFolder}/scripts/deploy/09_start_rag_api.sh",
+      "group": "build",
+      "presentation": { "reveal": "always", "panel": "dedicated", "showReuseMessage": false }
+    },
+
+    {
+      "label": "❤️  HEALTH: Check All Services",
+      "type": "shell",
+      "command": "bash ${workspaceFolder}/scripts/deploy/10_health_check.sh",
+      "group": "test",
+      "presentation": { "reveal": "always", "panel": "dedicated", "showReuseMessage": false }
+    },
+
+    {
+      "label": "🧪 TEST: Run Inference Test",
+      "type": "shell",
+      "command": "bash ${workspaceFolder}/scripts/deploy/11_test_inference.sh",
+      "group": "test",
+      "presentation": { "reveal": "always", "panel": "dedicated", "showReuseMessage": false }
+    },
+
+    {
+      "label": "⏹  STOP: Stop All Containers",
+      "type": "shell",
+      "command": "docker stop telecom-ollama telecom-chromadb 2>/dev/null; echo 'All containers stopped.'",
+      "group": "build",
+      "presentation": { "reveal": "always", "panel": "dedicated", "showReuseMessage": false }
+    },
+
+    {
+      "label": "🗑  CLEAN: Remove All Containers",
+      "type": "shell",
+      "command": "docker rm -f telecom-ollama telecom-chromadb 2>/dev/null; echo 'All containers removed.'",
+      "group": "build",
+      "presentation": { "reveal": "always", "panel": "dedicated", "showReuseMessage": false }
+    },
+
+    {
+      "label": "🚀 FULL DEPLOY: Run Complete Pipeline",
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "🐍 SETUP: Install Python 3.11 + pip",
+        "📥 MODEL: Download Mistral 7B GGUF",
+        "✅ MODEL: Verify Checksums",
+        "🐳 DOCKER: Pull + Save Container Images",
+        "🤖 OLLAMA: Start Ollama Container",
+        "🤖 OLLAMA: Register Telecom SLM Model",
+        "🧠 CHROMADB: Start ChromaDB Container",
+        "🚀 RAG API: Start Service",
+        "❤️  HEALTH: Check All Services",
+        "🧪 TEST: Run Inference Test"
+      ],
+      "group": { "kind": "build", "isDefault": true },
+      "presentation": { "reveal": "always", "panel": "dedicated", "showReuseMessage": false }
+    }
+
+  ]
+}
